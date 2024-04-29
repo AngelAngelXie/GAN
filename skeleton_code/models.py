@@ -47,6 +47,15 @@ class DCGenerator(nn.Module):
         ###########################################
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
+        # deconv1 1x1x100 --> 4x4x128  +  Batch Normalization
+        self.deconv1 = deconv(in_channels=100, out_channels=128, stride=1, kernel_size=4, padding=0, batch_norm=True);
+        # deconv2 4x4x128  --> 8x8x64  +  Batch Normalization
+        self.deconv1 = deconv(in_channels=128, out_channels=64, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        # deconv3 8x8x64 --> 16x16x32  +  Batch Normalization
+        self.deconv1 = deconv(in_channels=64, out_channels=32, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        # deconv4 16x16x32 --> 32x32x3
+        self.deconv1 = deconv(in_channels=32, out_channels=3, stride=2, kernel_size=4, padding=1, batch_norm=False);
+        ###########################################
 
 
     def forward(self, z):
@@ -128,6 +137,15 @@ class DCDiscriminator(nn.Module):
 
         ###########################################
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
+        ###########################################
+        # conv1: 32x32x3 --> 16x16x32  +  Batch Normalization
+        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        # conv2: 16x16x32 --> 8x8x64  +  Batch Normalization
+        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        # conv3: 8x8x64 --> 4x4x128  +  Batch Normalization
+        self.conv3 = conv(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        # conv4: 4x4x128 --> 1x1x1
+        self.conv4 = conv(in_channels=128, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=False, init_zero_weights=False);
         ###########################################
 
     def forward(self, x):
