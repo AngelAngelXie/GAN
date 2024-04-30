@@ -48,15 +48,14 @@ class DCGenerator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         # deconv1 1x1x100 --> 4x4x128  +  Batch Normalization
-        self.deconv1 = deconv(in_channels=100, out_channels=128, stride=1, kernel_size=4, padding=0, batch_norm=True);
+        self.deconv1 = deconv(in_channels=noise_size, out_channels=4*conv_dim, stride=1, kernel_size=4, padding=0, batch_norm=True);
         # deconv2 4x4x128  --> 8x8x64  +  Batch Normalization
-        self.deconv1 = deconv(in_channels=128, out_channels=64, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        self.deconv2 = deconv(in_channels=4*conv_dim, out_channels=2*conv_dim, stride=2, kernel_size=4, padding=1, batch_norm=True);
         # deconv3 8x8x64 --> 16x16x32  +  Batch Normalization
-        self.deconv1 = deconv(in_channels=64, out_channels=32, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        self.deconv3 = deconv(in_channels=2*conv_dim, out_channels=conv_dim, stride=2, kernel_size=4, padding=1, batch_norm=True);
         # deconv4 16x16x32 --> 32x32x3
-        self.deconv1 = deconv(in_channels=32, out_channels=3, stride=2, kernel_size=4, padding=1, batch_norm=False);
+        self.deconv4 = deconv(in_channels=conv_dim, out_channels=3, stride=2, kernel_size=4, padding=1, batch_norm=False);
         ###########################################
-
 
     def forward(self, z):
         """Generates an image given a sample of random noise.
@@ -69,7 +68,6 @@ class DCGenerator(nn.Module):
             ------
                 out: BS x channels x image_width x image_height  -->  16x3x32x32
         """
-
         out = F.relu(self.deconv1(z))
         out = F.relu(self.deconv2(out))
         out = F.relu(self.deconv3(out))
