@@ -4,6 +4,8 @@ import scipy
 import scipy.misc
 import numpy as np
 from models import DCGenerator, DCDiscriminator
+# added by Angel 
+import imageio
 
 SEED = 11
 
@@ -56,7 +58,8 @@ def save_samples(G, fixed_noise, iteration, opts):
 
     # merged = merge_images(X, fake_Y, opts)
     path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
-    scipy.misc.imsave(path, grid)
+    # scipy.misc.imsave(path, grid) # modified by Angel for version issue
+    imageio.imwrite(path, grid)
     print('Saved {}'.format(path))
     
 
