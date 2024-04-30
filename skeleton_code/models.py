@@ -41,7 +41,7 @@ def conv(in_channels, out_channels, kernel_size, stride=2, padding=1, batch_norm
 
 
 class DCGenerator(nn.Module):
-    def __init__(self, conv_dim):
+    def __init__(self, noise_size, conv_dim):
         super(DCGenerator, self).__init__()
 
         ###########################################
