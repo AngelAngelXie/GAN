@@ -69,7 +69,7 @@ def train(train_loader, opts, device):
 
             # 2. Sample noise
             # sample same number of noise as the batch size
-            noise = sample_noise(real_images.size(0), 1).to(device);
+            noise = sample_noise(real_images.size(0), 100).to(device);
             
 
             # 3. Generate fake images from the noise
