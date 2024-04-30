@@ -141,16 +141,16 @@ class DCDiscriminator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         # conv1: 32x32x3 --> 16x16x32  +  Batch Normalization
-        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
+        self.conv1 = conv(in_channels=3, out_channels=conv_dim, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
         self.dropout1 = nn.Dropout(0.25)
         # conv2: 16x16x32 --> 8x8x64  +  Batch Normalization
-        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
+        self.conv2 = conv(in_channels=conv_dim, out_channels=conv_dim*2, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
         self.dropout2 = nn.Dropout(0.25)
         # conv3: 8x8x64 --> 4x4x128  +  Batch Normalization
-        self.conv3 = conv(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
+        self.conv3 = conv(in_channels=conv_dim*2, out_channels=conv_dim*4, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
         self.dropout3 = nn.Dropout(0.25)
         # conv4: 4x4x128 --> 1x1x1
-        self.conv4 = conv(in_channels=128, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=False, init_zero_weights=True);
+        self.conv4 = conv(in_channels=conv_dim*4, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=False, init_zero_weights=True);
         ###########################################
 
     def forward(self, x):
