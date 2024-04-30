@@ -29,7 +29,7 @@ SEED = 11
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-def train(train_loader, opt, device):
+def train(train_loader, opts, device):
     
     G, D = create_model(opts)
     
