@@ -73,7 +73,7 @@ def train(train_loader, opts, device):
             # fill ground_truth tensor with all 1's since all images are real. real_images.size(0) accesses the batch size.
             ground_truth = torch.ones(real_images.size(0), device = device);
             # calculate the loss between real images and ground truth. D(real_images) should output a tensor of all 1's ideally
-            D_real_loss = mse_loss(D(real_images), ground_truth);
+            D_real_loss = bce_loss(D(real_images), ground_truth);
             
 
             # 2. Sample noise
@@ -90,7 +90,7 @@ def train(train_loader, opts, device):
             fake_ground_truth = torch.zeros(real_images.size(0), device = device);
             # calculate the loss between generated images and the ground truth. D(fake_images) should output a tensor of all 0's ideally
             # use detach() to avoid back propagation affecting the generator during discriminator training phase
-            D_fake_loss = mse_loss(D(fake_images), fake_ground_truth);
+            D_fake_loss = bce_loss(D(fake_images), fake_ground_truth);
             
             # 5. Compute the total discriminator loss
             D_total_loss = (D_fake_loss + D_real_loss)/2;
@@ -116,7 +116,7 @@ def train(train_loader, opts, device):
             # allow the gradient to flow through both generator and discriminator
             # generator needs to know how to adjust its param to produce realistic images based on gradient info from the discriminator
             # therefore, no detach() needed here
-            G_loss = mse_loss(D(fake_images), fake_real_labels);
+            G_loss = bce_loss(D(fake_images), fake_real_labels);
 
             # the weight update here will not affect discriminator since only generator is targeted
             G_loss.backward()
