@@ -18,6 +18,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+import matplotlib.pyplot as plt
+
 # Local imports
 from data_loader import get_emoji_loader
 from models import CycleGenerator, DCDiscriminator
@@ -47,6 +49,12 @@ def train(train_loader, opts, device):
     bce_loss = torch.nn.BCELoss()
     total_train_iters = opts.num_epochs * len(train_loader)
     
+    D_real_losses=[]
+    D_fake_losses=[]
+    D_total_losses=[]
+    G_losses=[]
+    iters=[]
+
     for epoch in range(opts.num_epochs):
 
         for batch in train_loader:
@@ -118,6 +126,10 @@ def train(train_loader, opts, device):
             if iteration % opts.log_step == 0:
                 print('Iteration [{:4d}/{:4d}] | D_real_loss: {:6.4f} | D_fake_loss: {:6.4f} | G_loss: {:6.4f}'.format(
                        iteration, total_train_iters, D_real_loss.item(), D_fake_loss.item(), G_loss.item()))
+                D_real_losses.append(D_real_loss.item());
+                D_fake_losses.append(D_fake_loss.item());
+                D_total_losses.append(D_total_loss.item());
+                G_losses.append(G_loss.item());
 
             # Save the generated samples
             if iteration % opts.sample_every == 0:
@@ -128,6 +140,16 @@ def train(train_loader, opts, device):
                 checkpoint(iteration, G, D, opts)
 
             iteration += 1
+            break;
+    
+    fig, axs = plt.subplots(2, 2);
+    axs[0,0].plot(iters, D_real_losses, color="green");
+    axs[0,1].plot(iters, D_fake_losses, color="red");
+    axs[1,0].plot(iters, D_total_losses, color="black");
+    axs[1,1].plot(iters, G_losses, color="blue");
+    plt.show()
+
+
     
     
     
