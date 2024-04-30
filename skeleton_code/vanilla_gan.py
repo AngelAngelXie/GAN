@@ -104,7 +104,7 @@ def train(train_loader, opts, device):
             fake_images = G(noise);
             
             # 3. Compute the generator loss
-            fake_real_labels = torch.ones(fake_images.size(0), 1, device=device);
+            fake_real_labels = torch.ones(fake_images.size(0), device=device);
             # allow the gradient to flow through both generator and discriminator
             # generator needs to know how to adjust its param to produce realistic images based on gradient info from the discriminator
             # therefore, no detach() needed here
