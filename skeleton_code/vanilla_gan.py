@@ -20,6 +20,7 @@ import torch.optim as optim
 
 import matplotlib.pyplot as plt
 
+
 # Local imports
 from data_loader import get_emoji_loader
 from models import CycleGenerator, DCDiscriminator
@@ -142,12 +143,17 @@ def train(train_loader, opts, device):
 
             iteration += 1
             break;
-    
-    fig, axs = plt.subplots(2, 2);
-    axs[0,0].plot(iters, D_real_losses, color="green");
-    axs[0,1].plot(iters, D_fake_losses, color="red");
-    axs[1,0].plot(iters, D_total_losses, color="black");
-    axs[1,1].plot(iters, G_losses, color="blue");
+
+    # Plotting the losses after the training loop
+    plt.figure(figsize=(10, 5))
+    plt.title("Generator and Discriminator Loss During Training")
+    plt.plot(iters, D_real_losses, label="D Real Loss")
+    plt.plot(iters, D_fake_losses, label="D Fake Loss")
+    plt.plot(iters, D_total_losses, label="D Total Loss")
+    plt.plot(iters, G_losses, label="G Loss")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    plt.legend()
     plt.show()
 
 
