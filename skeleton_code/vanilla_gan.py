@@ -44,7 +44,7 @@ def train(train_loader, opt, device):
     iteration = 1
     
     mse_loss = torch.nn.MSELoss()
-#     bce_loss = torch.nn.BCELoss()
+    bce_loss = torch.nn.BCELoss()
     total_train_iters = opts.num_epochs * len(train_loader)
     
     for epoch in range(opts.num_epochs):
@@ -61,22 +61,29 @@ def train(train_loader, opt, device):
 
             # FILL THIS IN
             # 1. Compute the discriminator loss on real images
-            # D_real_loss = ...
+            # fill ground_truth tensor with all 1's since all images are real. real_images.size(0) accesses the batch size.
+            ground_truth = torch.ones(real_images.size(0), 1, device = device);
+            # calculate the loss between real images and ground truth. D(real_images) should output a tensor of all 1's ideally
+            D_real_loss = bce_loss(D(real_images), ground_truth);
             
 
             # 2. Sample noise
-            # noise = ...
+            # sample same number of noise as the batch size
+            noise = sample_noise(real_images.size(0), 1, device=device);
             
 
             # 3. Generate fake images from the noise
-            # fake_images = ...
+            fake_images = G(noise);
 
             # 4. Compute the discriminator loss on the fake images
-            # D_fake_loss = ...
+            # fill fake_ground_truth tensor with all 0's since all images are generated. real_images.size(0) accesses the batch size.
+            fake_ground_truth = torch.zeros(real_images.size(0), 1, device = device);
+            # calculate the loss between generated images and the ground truth. D(fake_images) should output a tensor of all 0's ideally
+            # use detach() to avoid back propagation affecting the generator during discriminator training phase
+            D_fake_loss = bce_loss(D(fake_images.detach()), fake_ground_truth);
             
-
             # 5. Compute the total discriminator loss
-            # D_total_loss = ...
+            D_total_loss = D_fake_loss + D_real_loss;
     
             D_total_loss.backward()
             d_optimizer.step()
@@ -89,18 +96,21 @@ def train(train_loader, opt, device):
 
             # FILL THIS IN
             # 1. Sample noise
-            # noise = ...
+            noise = sample_noise(real_images.size(0), 1, device=device);
             
-
             # 2. Generate fake images from the noise
-            # fake_images = ...
+            fake_images = G(noise);
             
             # 3. Compute the generator loss
-            # G_loss = ...
+            fake_real_labels = torch.ones(fake_images.size(0), 1, device=device);
+            # allow the gradient to flow through both generator and discriminator
+            # generator needs to know how to adjust its param to produce realistic images based on gradient info from the discriminator
+            # therefore, no detach() needed here
+            G_loss = bce_loss(D(fake_images), fake_real_labels);
 
+            # the weight update here will not affect discriminator since only generator is targeted
             G_loss.backward()
             g_optimizer.step()
-
 
             # Print the log info
             if iteration % opts.log_step == 0:
