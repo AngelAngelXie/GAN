@@ -40,7 +40,7 @@ def train(train_loader, opts, device):
     D.to(device)
     
     g_optimizer = optim.Adam(G.parameters(), opts.lr, [opts.beta1, opts.beta2])
-    d_optimizer = optim.Adam(D.parameters(), opts.lr, [opts.beta1, opts.beta2])
+    d_optimizer = optim.Adam(D.parameters(), 0.0001, [opts.beta1, opts.beta2])
     
     fixed_noise = sample_noise(opts.batch_size, opts.noise_size).to(device)
     
@@ -82,7 +82,6 @@ def train(train_loader, opts, device):
             
 
             # 3. Generate fake images from the noise
-            print(noise.shape);
             fake_images = G(noise);
             
 
@@ -94,7 +93,7 @@ def train(train_loader, opts, device):
             D_fake_loss = bce_loss(D(fake_images.detach()), fake_ground_truth);
             
             # 5. Compute the total discriminator loss
-            D_total_loss = D_fake_loss + D_real_loss;
+            D_total_loss = (D_fake_loss + D_real_loss)/2;
     
             D_total_loss.backward()
             d_optimizer.step()
