@@ -62,7 +62,7 @@ def train(train_loader, opts, device):
             # FILL THIS IN
             # 1. Compute the discriminator loss on real images
             # fill ground_truth tensor with all 1's since all images are real. real_images.size(0) accesses the batch size.
-            ground_truth = torch.ones(real_images.size(0), 1, device = device);
+            ground_truth = torch.ones(real_images.size(0), device = device);
             # calculate the loss between real images and ground truth. D(real_images) should output a tensor of all 1's ideally
             D_real_loss = bce_loss(D(real_images), ground_truth);
             
@@ -77,7 +77,7 @@ def train(train_loader, opts, device):
 
             # 4. Compute the discriminator loss on the fake images
             # fill fake_ground_truth tensor with all 0's since all images are generated. real_images.size(0) accesses the batch size.
-            fake_ground_truth = torch.zeros(real_images.size(0), 1, device = device);
+            fake_ground_truth = torch.zeros(real_images.size(0), device = device);
             # calculate the loss between generated images and the ground truth. D(fake_images) should output a tensor of all 0's ideally
             # use detach() to avoid back propagation affecting the generator during discriminator training phase
             D_fake_loss = bce_loss(D(fake_images.detach()), fake_ground_truth);

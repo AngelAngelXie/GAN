@@ -99,8 +99,8 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         # Train with real images
         # 1. Compute the discriminator losses on real images
         # teaching the discriminator to recognize images
-        D_X_loss = bce_loss(D_X(images_X), torch.ones(images_X.size(0), 1, device=device));
-        D_Y_loss = bce_loss(D_Y(images_Y), torch.ones(images_Y.size(0), 1, device=device));
+        D_X_loss = bce_loss(D_X(images_X), torch.ones(images_X.size(0), device=device));
+        D_Y_loss = bce_loss(D_Y(images_Y), torch.ones(images_Y.size(0), device=device));
 
         d_real_loss = D_X_loss + D_Y_loss
         d_real_loss.backward()
@@ -113,13 +113,13 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         fake_X = G_YtoX(images_Y);
 
         # 3. Compute the loss for D_X, expect the fake X to get a low similarity score
-        D_X_loss = bce_loss(D_X(fake_X.detach()), torch.zeros(images_Y.size(0), 1, device=device));
+        D_X_loss = bce_loss(D_X(fake_X.detach()), torch.zeros(images_Y.size(0), device=device));
 
         # 4. Generate fake images that look like domain Y based on real images in domain X
         fake_Y = G_XtoY(images_X);
 
         # 5. Compute the loss for D_Y, expect the fake X to get a low similarity score
-        D_Y_loss = bce_loss(D_Y(fake_Y.detach()), torch.zeros(images_X.size(0), 1, device=device));
+        D_Y_loss = bce_loss(D_Y(fake_Y.detach()), torch.zeros(images_X.size(0), device=device));
 
         d_fake_loss = D_X_loss + D_Y_loss
         d_fake_loss.backward()
@@ -140,7 +140,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         fake_X = G_YtoX(images_Y);
 
         # 2. Compute the generator loss based on domain X; expecting fake data to get high similarity score
-        g_loss = bce_loss(D_X(fake_X), torch.ones(images_Y.size(0), 1, device=device));
+        g_loss = bce_loss(D_X(fake_X), torch.ones(images_Y.size(0), device=device));
 
         # 3. Compute the cycle consistency loss (the reconstruction loss); expecting fake data to get high similarity score
         cycle_consistency_loss = l2_loss(images_Y, D_X(G_XtoY(fake_X)));
@@ -160,7 +160,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         fake_Y = G_XtoY(images_X);
 
         # 2. Compute the generator loss based on domain Y
-        g_loss = bce_loss(D_Y(fake_Y), torch.ones(images_X.size(0), 1, device=device));
+        g_loss = bce_loss(D_Y(fake_Y), torch.ones(images_X.size(0), device=device));
 
         # 3. Compute the cycle consistency loss (the reconstruction loss)
         cycle_consistency_loss = l2_loss(images_X, D_X(G_YtoX(fake_Y)));
