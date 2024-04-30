@@ -99,11 +99,15 @@ class CycleGenerator(nn.Module):
         ###########################################
 
         # 1. Define the encoder part of the generator (that extracts features from the input image)
-
+        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        
         # 2. Define the transformation part of the generator
+        self.resnet_block = ResnetBlock();
         
         # 3. Define the decoder part of the generator (that builds up the output image from features)
-
+        self.deconv1 = deconv(in_channels=64, out_channels=32, stride=2, kernel_size=4, padding=1, batch_norm=False);
+        self.deconv2 = deconv(in_channels=32, out_channels=3, stride=2, kernel_size=4, padding=1, batch_norm=False);
 
     def forward(self, x):
         """Generates an image conditioned on an input image.
