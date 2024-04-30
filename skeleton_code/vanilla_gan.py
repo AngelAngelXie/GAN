@@ -142,7 +142,6 @@ def train(train_loader, opts, device):
                 checkpoint(iteration, G, D, opts)
 
             iteration += 1
-            break;
 
     # Plotting the losses after the training loop
     plt.figure(figsize=(10, 5))
