@@ -154,7 +154,7 @@ def train(train_loader, opts, device):
     plt.xlabel("Iterations")
     plt.ylabel("Loss")
     plt.legend()
-    plt.show()
+    plt.savefig('GANLossRes.png')
 
 
     
