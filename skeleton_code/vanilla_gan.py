@@ -90,7 +90,7 @@ def train(train_loader, opts, device):
             fake_ground_truth = torch.zeros(real_images.size(0), device = device);
             # calculate the loss between generated images and the ground truth. D(fake_images) should output a tensor of all 0's ideally
             # use detach() to avoid back propagation affecting the generator during discriminator training phase
-            D_fake_loss = mse_loss(D(fake_images.detach()), fake_ground_truth);
+            D_fake_loss = mse_loss(D(fake_images), fake_ground_truth);
             
             # 5. Compute the total discriminator loss
             D_total_loss = (D_fake_loss + D_real_loss)/2;
