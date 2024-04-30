@@ -73,7 +73,9 @@ def train(train_loader, opts, device):
             
 
             # 3. Generate fake images from the noise
+            print(noise.shape);
             fake_images = G(noise);
+            
 
             # 4. Compute the discriminator loss on the fake images
             # fill fake_ground_truth tensor with all 0's since all images are generated. real_images.size(0) accesses the batch size.
