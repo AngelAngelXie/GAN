@@ -130,6 +130,7 @@ def train(train_loader, opts, device):
                 D_fake_losses.append(D_fake_loss.item());
                 D_total_losses.append(D_total_loss.item());
                 G_losses.append(G_loss.item());
+                iters.append(iteration);
 
             # Save the generated samples
             if iteration % opts.sample_every == 0:
