@@ -41,7 +41,7 @@ def conv(in_channels, out_channels, kernel_size, stride=2, padding=1, batch_norm
 
 
 class DCGenerator(nn.Module):
-    def __init__(self):
+    def __init__(self, conv_dim):
         super(DCGenerator, self).__init__()
 
         ###########################################
@@ -91,7 +91,7 @@ class CycleGenerator(nn.Module):
     """Defines the architecture of the generator network.
        Note: Both generators G_XtoY and G_YtoX have the same architecture in this assignment.
     """
-    def __init__(self):
+    def __init__(self, conv_dim, init_zero_weights):
         super(CycleGenerator, self).__init__()
 
         ###########################################
@@ -99,8 +99,8 @@ class CycleGenerator(nn.Module):
         ###########################################
 
         # 1. Define the encoder part of the generator (that extracts features from the input image)
-        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
-        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=init_zero_weights);
+        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=init_zero_weights);
         
         # 2. Define the transformation part of the generator
         self.resnet_block = ResnetBlock();
@@ -136,7 +136,7 @@ class DCDiscriminator(nn.Module):
     """Defines the architecture of the discriminator network.
        Note: Both discriminators D_X and D_Y have the same architecture in this assignment.
     """
-    def __init__(self):
+    def __init__(self, conv_dim):
         super(DCDiscriminator, self).__init__()
 
         ###########################################
