@@ -142,10 +142,13 @@ class DCDiscriminator(nn.Module):
         ###########################################
         # conv1: 32x32x3 --> 16x16x32  +  Batch Normalization
         self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        self.dropout1 = nn.Dropout(0.25)
         # conv2: 16x16x32 --> 8x8x64  +  Batch Normalization
         self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        self.dropout2 = nn.Dropout(0.25)
         # conv3: 8x8x64 --> 4x4x128  +  Batch Normalization
         self.conv3 = conv(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=False);
+        self.dropout3 = nn.Dropout(0.25)
         # conv4: 4x4x128 --> 1x1x1
         self.conv4 = conv(in_channels=128, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=False, init_zero_weights=False);
         ###########################################
@@ -153,8 +156,11 @@ class DCDiscriminator(nn.Module):
     def forward(self, x):
 
         out = F.relu(self.conv1(x))
+        out = self.dropout1(out)
         out = F.relu(self.conv2(out))
+        out = self.dropout2(out)
         out = F.relu(self.conv3(out))
+        out = self.dropout3(out)
 
         out = self.conv4(out).squeeze()
         out = F.sigmoid(out)
