@@ -92,8 +92,8 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
             iter_X = iter(dataloader_X)
             iter_Y = iter(dataloader_Y)
             
-        images_X = iter_X.next()[0].to(device)
-        images_Y = iter_Y.next()[0].to(device)
+        images_X = next(iter_X)[0].to(device)
+        images_Y = next(iter_Y)[0].to(device)
 
         # ============================================
         #            TRAIN THE DISCRIMINATORS
