@@ -66,7 +66,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
 
     # =====ADDED BY ANGEL=====
     bce_loss = torch.nn.BCELoss();
-    l2_loss = torch.nn.L2Loss();
+    l2_loss = torch.nn.MSELoss();
 
     # Create optimizers for the generators and discriminators
     g_optimizer = optim.Adam(g_params, opts.lr, [opts.beta1, opts.beta2])
