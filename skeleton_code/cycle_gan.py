@@ -54,6 +54,13 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
     D_X.to(device)
     D_Y.to(device)
 
+    D_real_losses=[]
+    D_fake_losses=[]
+    D_Y_losses=[]
+    D_X_losses=[]
+    G_losses=[]
+    iters=[]
+
     g_params = list(G_XtoY.parameters()) + list(G_YtoX.parameters())  # Get generator parameters
     d_params = list(D_X.parameters()) + list(D_Y.parameters())  # Get discriminator parameters
 
@@ -177,6 +184,12 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                   'd_fake_loss: {:6.4f} | g_loss: {:6.4f}'.format(
                     iteration, opts.train_iters, d_real_loss.item(), D_Y_loss.item(),
                     D_X_loss.item(), d_fake_loss.item(), g_loss.item()))
+            D_real_losses.append(d_real_loss.item());
+            D_fake_losses.append(d_fake_loss.item());
+            D_Y_losses.append(D_Y_loss.item());
+            D_X_losses.append(D_X_loss.item());
+            G_losses.append(g_loss.item());
+            iters.append(iteration);
 
 
         # Save the generated samples
@@ -187,6 +200,19 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         # Save the model parameters
         if iteration % opts.checkpoint_every == 0:
             checkpoint(iteration, G_XtoY, G_YtoX, D_X, D_Y, opts)
+    
+    # Plotting the losses after the training loop
+    plt.figure(figsize=(10, 5))
+    plt.title("Generator and Discriminator Loss During Training")
+    plt.plot(iters, D_real_losses, label="D Real Loss")
+    plt.plot(iters, D_fake_losses, label="D Fake Loss")
+    plt.plot(iters, D_Y_losses, label="D Y Loss")
+    plt.plot(iters, D_X_losses, label="D X Loss")
+    plt.plot(iters, G_losses, label="G Loss")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.savefig('GANLossRes.png')
 
 
 def main(opts):
