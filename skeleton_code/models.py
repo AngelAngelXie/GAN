@@ -48,13 +48,13 @@ class DCGenerator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         # deconv1 1x1x100 --> 4x4x128  +  Batch Normalization
-        self.deconv1 = deconv(in_channels=noise_size, out_channels=4*conv_dim, stride=1, kernel_size=4, padding=0, batch_norm=True);
+        self.deconv1 = deconv(in_channels=noise_size, out_channels=4*conv_dim, kernel_size=4, stride=1, padding=0, batch_norm=True);
         # deconv2 4x4x128  --> 8x8x64  +  Batch Normalization
-        self.deconv2 = deconv(in_channels=4*conv_dim, out_channels=2*conv_dim, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        self.deconv2 = deconv(in_channels=4*conv_dim, out_channels=2*conv_dim, kernel_size=4, stride=2, padding=1, batch_norm=True);
         # deconv3 8x8x64 --> 16x16x32  +  Batch Normalization
-        self.deconv3 = deconv(in_channels=2*conv_dim, out_channels=conv_dim, stride=2, kernel_size=4, padding=1, batch_norm=True);
+        self.deconv3 = deconv(in_channels=2*conv_dim, out_channels=conv_dim, kernel_size=4, stride=2, padding=1, batch_norm=True);
         # deconv4 16x16x32 --> 32x32x3
-        self.deconv4 = deconv(in_channels=conv_dim, out_channels=3, stride=2, kernel_size=4, padding=1, batch_norm=False);
+        self.deconv4 = deconv(in_channels=conv_dim, out_channels=3, kernel_size=4, stride=2, padding=1, batch_norm=False);
         ###########################################
 
     def forward(self, z):
@@ -68,9 +68,9 @@ class DCGenerator(nn.Module):
             ------
                 out: BS x channels x image_width x image_height  -->  16x3x32x32
         """
-        out = F.relu(self.deconv1(z))
-        out = F.relu(self.deconv2(out))
-        out = F.relu(self.deconv3(out))
+        out = F.leaky_relu(self.deconv1(z))
+        out = F.leaky_relu(self.deconv2(out))
+        out = F.leaky_relu(self.deconv3(out))
         out = F.tanh(self.deconv4(out))
         return out
 
@@ -156,11 +156,11 @@ class DCDiscriminator(nn.Module):
     def forward(self, x):
 
         out = F.leaky_relu(self.conv1(x), negative_slope=0.2)
-        out = self.dropout1(out)
+        # out = self.dropout1(out)
         out = F.leaky_relu(self.conv2(out), negative_slope=0.2)
-        out = self.dropout2(out)
+        # out = self.dropout2(out)
         out = F.leaky_relu(self.conv3(out), negative_slope=0.2)
-        out = self.dropout3(out)
+        # out = self.dropout3(out)
 
         out = self.conv4(out).squeeze()
         out = F.sigmoid(out)
