@@ -156,11 +156,11 @@ class DCDiscriminator(nn.Module):
     def forward(self, x):
 
         out = F.leaky_relu(self.conv1(x), negative_slope=0.2)
-        out = self.dropout1(out)
+        # out = self.dropout1(out)
         out = F.leaky_relu(self.conv2(out), negative_slope=0.2)
-        out = self.dropout2(out)
+        # out = self.dropout2(out)
         out = F.leaky_relu(self.conv3(out), negative_slope=0.2)
-        out = self.dropout3(out)
+        # out = self.dropout3(out)
 
         out = self.conv4(out).squeeze()
         out = F.sigmoid(out)
