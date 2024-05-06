@@ -188,7 +188,7 @@ def create_parser():
     parser.add_argument('--noise_size', type=int, default=100)
 
     # Training hyper-parameters
-    parser.add_argument('--num_epochs', type=int, default=20) # default 50
+    parser.add_argument('--num_epochs', type=int, default=50) # default 50
     parser.add_argument('--batch_size', type=int, default=128, help='The number of images in a batch.') # default was 16
     parser.add_argument('--num_workers', type=int, default=0, help='The number of threads to use for the DataLoader.')
     parser.add_argument('--lr', type=float, default=0.0002, help='The learning rate (default 0.0003)')
@@ -202,7 +202,7 @@ def create_parser():
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoints_vanilla')
     parser.add_argument('--sample_dir', type=str, default='./samples_vanilla')
     parser.add_argument('--log_step', type=int , default=10)
-    parser.add_argument('--sample_every', type=int , default=200)
+    parser.add_argument('--sample_every', type=int , default=50) #default = 200
     parser.add_argument('--checkpoint_every', type=int , default=400)
 
     return parser
