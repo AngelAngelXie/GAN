@@ -76,6 +76,6 @@ def sample_noise(batch_size, dim):
     - A PyTorch Variable of shape (batch_size, dim, 1, 1) containing uniform
       random noise in the range (-1, 1).
     """
-    noise = torch.rand(batch_size, dim) * 2 - 1
+    noise = torch.randn(batch_size, dim) * 2 - 1
     return noise.view(batch_size, dim, 1, 1)
 
