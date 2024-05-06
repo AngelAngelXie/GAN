@@ -26,13 +26,13 @@ def deconv(in_channels, out_channels, kernel_size, stride=2, padding=1, batch_no
     return nn.Sequential(*layers)
 
 
-def conv(in_channels, out_channels, kernel_size, stride=2, padding=1, batch_norm=True, init_zero_weights=False):
+def conv(in_channels, out_channels, kernel_size, stride=2, padding=1, batch_norm=True, init_zero_weights=True):
     """Creates a convolutional layer, with optional batch normalization.
     """
     layers = []
     conv_layer = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding, bias=False)
     if init_zero_weights:
-        conv_layer.weight.data = torch.randn(out_channels, in_channels, kernel_size, kernel_size) * 0.001
+        conv_layer.weight.data = torch.randn(out_channels, in_channels, kernel_size, kernel_size) * 0.04
     layers.append(conv_layer)
 
     if batch_norm:
@@ -68,9 +68,9 @@ class DCGenerator(nn.Module):
             ------
                 out: BS x channels x image_width x image_height  -->  16x3x32x32
         """
-        out = F.leaky_relu(self.deconv1(z))
-        out = F.leaky_relu(self.deconv2(out))
-        out = F.leaky_relu(self.deconv3(out))
+        out = F.relu(self.deconv1(z))
+        out = F.relu(self.deconv2(out))
+        out = F.relu(self.deconv3(out))
         out = F.tanh(self.deconv4(out))
         return out
 
@@ -141,7 +141,7 @@ class DCDiscriminator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         # conv1: 32x32x3 --> 16x16x32  +  Batch Normalization
-        self.conv1 = conv(in_channels=3, out_channels=conv_dim, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
+        self.conv1 = conv(in_channels=3, out_channels=conv_dim, kernel_size=4, stride=2, padding=1, batch_norm=False, init_zero_weights=True);
         self.dropout1 = nn.Dropout(0.5)
         # conv2: 16x16x32 --> 8x8x64  +  Batch Normalization
         self.conv2 = conv(in_channels=conv_dim, out_channels=conv_dim*2, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
@@ -150,7 +150,7 @@ class DCDiscriminator(nn.Module):
         self.conv3 = conv(in_channels=conv_dim*2, out_channels=conv_dim*4, kernel_size=4, stride=2, padding=1, batch_norm=True, init_zero_weights=True);
         self.dropout3 = nn.Dropout(0.5)
         # conv4: 4x4x128 --> 1x1x1
-        self.conv4 = conv(in_channels=conv_dim*4, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=False, init_zero_weights=True);
+        self.conv4 = conv(in_channels=conv_dim*4, out_channels=1, kernel_size=4, stride=1, padding=0, batch_norm=True, init_zero_weights=True);
         ###########################################
 
     def forward(self, x):
