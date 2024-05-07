@@ -41,7 +41,7 @@ def train(train_loader, opts, device):
     
     g_optimizer = optim.Adam(G.parameters(), opts.lr, [opts.beta1, opts.beta2])
     # d_optimizer = optim.Adam(D.parameters(), opts.lr, [opts.beta1, opts.beta2])
-    d_optimizer = optim.SGD(D.parameters(), opts.lr, momentum=0.9)
+    d_optimizer = optim.SGD(D.parameters(), opts.lr, momentum=0.5)
 
     fixed_noise = sample_noise(opts.batch_size, opts.noise_size).to(device)
     
