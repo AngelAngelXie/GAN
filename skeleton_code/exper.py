@@ -230,6 +230,8 @@ def forward_and_backward(model, data, loss_function, targets):
     Perform forward and backward pass in a generic way. Returns loss value.
   """
   outputs = model(data)
+  print("ATTENTIONNNNNNNNNN")
+  print(outputs.shape)
   error = loss_function(outputs, targets)
   error.backward()
   return error.item()
