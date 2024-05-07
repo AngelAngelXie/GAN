@@ -247,7 +247,7 @@ def perform_train_step(generator, discriminator, real_data, \
   # in some cases.
   real_images = real_data[0].to(device)
   actual_batch_size = real_images.size(0)
-  label = torch.full((actual_batch_size,1), real_label, device=device)
+  label = torch.full((actual_batch_size,), real_label, device=device)
   
   # 2. TRAINING THE DISCRIMINATOR
   # Zero the gradients for discriminator
