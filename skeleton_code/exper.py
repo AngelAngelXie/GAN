@@ -53,7 +53,7 @@ class Generator(nn.Module):
       nn.BatchNorm2d(num_feature_maps),
       nn.ReLU(),
       # Fifth upsampling block: note Tanh
-      nn.ConvTranspose2d(num_feature_maps, 1, 1, 1, 2, bias=False),
+      nn.ConvTranspose2d(num_feature_maps, 3, 1, 1, 2, bias=False),
       nn.Tanh()
     )
 
@@ -70,7 +70,7 @@ class Discriminator(nn.Module):
     super().__init__()
     num_feature_maps = 64
     self.layers = nn.Sequential(
-      nn.Conv2d(1, num_feature_maps, 4, 2, 1, bias=False),
+      nn.Conv2d(3, num_feature_maps, 4, 2, 1, bias=False),
       nn.BatchNorm2d(num_feature_maps * 1),
       nn.LeakyReLU(0.2),
       nn.Conv2d(num_feature_maps, num_feature_maps * 2, 4, 2, 1, bias=False),
