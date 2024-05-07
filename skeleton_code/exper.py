@@ -1,6 +1,7 @@
 import os
 import torch
 from torch import nn
+from torchvision import datasets
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -135,17 +136,41 @@ def print_training_progress(batch, generator_loss, discriminator_loss):
   print('Losses after mini-batch %5d: generator %e, discriminator %e' %
         (batch, generator_loss, discriminator_loss))
 
+def get_emoji_loader(emoji_type, image_size, batch_size, num_workers):
+    """Creates training and test data loaders.
+    """
+    transform = transforms.Compose([
+                    transforms.Resize(image_size),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ])
+
+    # train_path = os.path.join('./emojis', emoji_type)
+    # test_path = os.path.join('./emojis', 'Test_{}'.format(emoji_type))
+    train_path = os.path.join('/content/GAN/skeleton_code/emojis', emoji_type)
+    test_path = os.path.join('/content/GAN/skeleton_code/emojis', 'Test_{}'.format(emoji_type))
+
+    train_dataset = datasets.ImageFolder(train_path, transform)
+    test_dataset = datasets.ImageFolder(test_path, transform)
+
+    train_dloader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
+    test_dloader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+
+    return train_dloader, test_dloader
 
 def prepare_dataset():
   """ Prepare dataset through DataLoader """
   # Prepare MNIST dataset
-  dataset = MNIST(os.getcwd(), download=True, train=True, transform=transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
-  ]))
-  # Batch and shuffle data with DataLoader
-  trainloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True)
+#   dataset = MNIST(os.getcwd(), download=True, train=True, transform=transforms.Compose([
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.5,), (0.5,))
+#   ]))
+#   # Batch and shuffle data with DataLoader
+#   trainloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True)
   # Return dataset through DataLoader
+
+  trainloader, _ = get_emoji_loader("Apple", 32, 128, 0)
+
   return trainloader
     
     
