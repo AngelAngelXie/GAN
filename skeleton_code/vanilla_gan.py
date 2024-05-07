@@ -192,7 +192,7 @@ def create_parser():
     parser.add_argument('--num_epochs', type=int, default=50) # default 50
     parser.add_argument('--batch_size', type=int, default=16, help='The number of images in a batch.') # default was 16
     parser.add_argument('--num_workers', type=int, default=0, help='The number of threads to use for the DataLoader.')
-    parser.add_argument('--lr', type=float, default=0.0002, help='The learning rate (default 0.0003)')
+    parser.add_argument('--lr', type=float, default=0.00005, help='The learning rate (default 0.0003)')
     parser.add_argument('--beta1', type=float, default=0.5)
     parser.add_argument('--beta2', type=float, default=0.999)
 
