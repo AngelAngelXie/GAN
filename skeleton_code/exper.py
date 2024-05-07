@@ -12,7 +12,7 @@ import uuid
 
 # Configurable variables
 NUM_EPOCHS = 50
-NOISE_DIMENSION = 50
+NOISE_DIMENSION = 100
 BATCH_SIZE = 128
 TRAIN_ON_GPU = True
 UNIQUE_RUN_ID = str(uuid.uuid4())
@@ -53,7 +53,8 @@ class Generator(nn.Module):
       nn.BatchNorm2d(num_feature_maps),
       nn.ReLU(),
       # Fifth upsampling block: note Tanh
-      nn.ConvTranspose2d(num_feature_maps, 3, 1, 1, 2, bias=False),
+    #   nn.ConvTranspose2d(num_feature_maps, 3, 1, 1, 2, bias=False),
+      nn.ConvTranspose2d(num_feature_maps, 3, 4, 2, 1, bias=False),
       nn.Tanh()
     )
 
