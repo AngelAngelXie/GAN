@@ -34,7 +34,7 @@ class Generator(nn.Module):
   """
   def __init__(self,):
     super().__init__()
-    num_feature_maps = 64
+    num_feature_maps = 32
     self.layers = nn.Sequential(
       # First upsampling block
       nn.ConvTranspose2d(NOISE_DIMENSION, num_feature_maps * 8, 4, 1, 0, bias=False),
@@ -68,7 +68,7 @@ class Discriminator(nn.Module):
   """
   def __init__(self):
     super().__init__()
-    num_feature_maps = 64
+    num_feature_maps = 32
     self.layers = nn.Sequential(
       nn.Conv2d(3, num_feature_maps, 4, 2, 1, bias=False),
       nn.BatchNorm2d(num_feature_maps * 1),
@@ -79,7 +79,7 @@ class Discriminator(nn.Module):
       nn.Conv2d(num_feature_maps * 2, num_feature_maps * 4, 4, 2, 1, bias=False),
       nn.BatchNorm2d(num_feature_maps * 4),
       nn.LeakyReLU(0.2),
-      nn.Conv2d(num_feature_maps * 4, 1, 4, 2, 1, bias=False),
+      nn.Conv2d(num_feature_maps * 4, 1, 4, 1, 0, bias=False),
       nn.Flatten(),
     #   nn.Linear(1, 1),
       nn.Sigmoid()
