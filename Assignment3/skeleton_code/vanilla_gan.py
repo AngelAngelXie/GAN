@@ -18,6 +18,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+import torchvision
 
 # visualization
 import matplotlib.pyplot as plt
@@ -40,6 +41,7 @@ def train(train_loader, opt, device):
     D_total_losses=[]
     G_losses=[]
     iters=[]
+    genRes=[]
     
     G, D = create_model(opts)
     
@@ -125,14 +127,20 @@ def train(train_loader, opt, device):
                 iters.append(iteration);
 
             # Save the generated samples
-            if iteration % opts.sample_every == 0:
-                save_samples(G, fixed_noise, iteration, opts)
+            # if iteration % opts.sample_every == 0:
+                
 
             # Save the model parameters
             if iteration % opts.checkpoint_every == 0:
                 checkpoint(iteration, G, D, opts)
 
             iteration += 1
+
+        with torch.no_grad():
+            fake_images = G(fixed_noise).detach().cpu()
+            genRes.append(
+                torchvision.utils.make_grid(fake_images, padding=2, normalize=True))
+
 
     # Plotting the losses after the training loop
     plt.figure(figsize=(10, 5))
@@ -145,6 +153,19 @@ def train(train_loader, opt, device):
     plt.ylabel("Loss")
     plt.legend()
     plt.savefig('GANLossRes.png')
+
+    for i in range(0, opts.num_epochs, 5):
+        plt.figure(figsize=(8, 8))
+        plt.axis('off')
+        plt.title(f'Generated images at epoch {i}')
+        plt.imshow(np.transpose(log_dict['images_from_noise_per_epoch'][i], (1, 2, 0)))
+        plt.show()
+        
+        plt.figure(figsize=(8, 8))
+        plt.axis('off')
+        plt.title(f'Generated images after last epoch')
+        plt.imshow(np.transpose(log_dict['images_from_noise_per_epoch'][-1], (1, 2, 0)))
+        plt.show()
     
     
     
