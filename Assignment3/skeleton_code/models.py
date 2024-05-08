@@ -48,11 +48,11 @@ class DCGenerator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         # convTranspose2d + BatchNorm2d
-        self.deconv1(noise_size, conv_dim*4, 4, 1, 0, True)
-        self.deconv2(conv_dim*4, conv_dim*2, 4, 2, 1, True)
-        self.deconv3(conv_dim*2, conv_dim, 4, 2, 1, True)
+        self.deconv1=deconv(noise_size, conv_dim*4, 4, 1, 0, True)
+        self.deconv2=deconv(conv_dim*4, conv_dim*2, 4, 2, 1, True)
+        self.deconv3=deconv(conv_dim*2, conv_dim, 4, 2, 1, True)
         # convTranspose2d only
-        self.deconv4(conv_dim, 3, 4, 2, 1, False)
+        self.deconv4=deconv(conv_dim, 3, 4, 2, 1, False)
 
     def forward(self, z):
         """Generates an image given a sample of random noise.
