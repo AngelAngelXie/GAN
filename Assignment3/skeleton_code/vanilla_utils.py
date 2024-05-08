@@ -4,6 +4,8 @@ import scipy
 import scipy.misc
 import numpy as np
 from models import DCGenerator, DCDiscriminator
+# added by Angel 
+from PIL import Image
 
 SEED = 11
 
@@ -56,7 +58,9 @@ def save_samples(G, fixed_noise, iteration, opts):
 
     # merged = merge_images(X, fake_Y, opts)
     path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
-    scipy.misc.imsave(path, grid)
+    # scipy.misc.imsave(path, grid) # modified by Angel for version issue
+    image = Image.fromarray(grid, 'RGB')
+    image.save(path);
     print('Saved {}'.format(path))
     
 
@@ -72,6 +76,6 @@ def sample_noise(batch_size, dim):
     - A PyTorch Variable of shape (batch_size, dim, 1, 1) containing uniform
       random noise in the range (-1, 1).
     """
-    noise = torch.rand(batch_size, dim) * 2 - 1
+    noise = torch.randn(batch_size, dim) * 2 - 1
     return noise.view(batch_size, dim, 1, 1)
 
