@@ -85,7 +85,7 @@ def train(train_loader, opt, device):
             flipped_fake_labels = real_labels
 
             # 4. Compute the discriminator loss on the fake images
-            D_fake_loss = loss_fn(fake_images.detach(), fake_labels)
+            D_fake_loss = loss_fn(D(fake_images.detach()), fake_labels)
             
 
             # 5. Compute the total discriminator loss
