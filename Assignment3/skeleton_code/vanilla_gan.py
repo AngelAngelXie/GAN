@@ -136,7 +136,8 @@ def train(train_loader, opt, device):
                     plt.axis('off')
                     plt.title(f'Generated images at iteration {iteration}')
                     plt.imshow(np.transpose(grid, (1, 2, 0)))
-                    plt.savefig(f'sample-{iteration}.png')
+                    path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                    plt.savefig(path)
 
                 
 
@@ -160,19 +161,6 @@ def train(train_loader, opt, device):
     plt.ylabel("Loss")
     plt.legend()
     plt.savefig('GANLossRes.png')
-
-    for i in range(0, opts.num_epochs, 5):
-        plt.figure(figsize=(8, 8))
-        plt.axis('off')
-        plt.title(f'Generated images at epoch {i}')
-        plt.imshow(np.transpose(genRes[i], (1, 2, 0)))
-        plt.show()
-        
-        plt.figure(figsize=(8, 8))
-        plt.axis('off')
-        plt.title(f'Generated images after last epoch')
-        plt.imshow(np.transpose(genRes[-1], (1, 2, 0)))
-        plt.savefig('{i}.png')
     
     
     
@@ -206,8 +194,8 @@ def create_parser():
     parser.add_argument('--noise_size', type=int, default=100)
 
     # Training hyper-parameters
-    parser.add_argument('--num_epochs', type=int, default=20)
-    parser.add_argument('--batch_size', type=int, default=128, help='The number of images in a batch.')
+    parser.add_argument('--num_epochs', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=16, help='The number of images in a batch.')
     parser.add_argument('--num_workers', type=int, default=0, help='The number of threads to use for the DataLoader.')
     parser.add_argument('--lr', type=float, default=0.0002, help='The learning rate (default 0.0003)')
     parser.add_argument('--beta1', type=float, default=0.5)
