@@ -22,11 +22,12 @@ import torchvision
 
 # visualization
 import matplotlib.pyplot as plt
+from PIL import Image
 
 # Local imports
 from data_loader import get_emoji_loader
 from models import CycleGenerator, DCDiscriminator
-from vanilla_utils import create_dir, create_model, checkpoint, sample_noise, save_samples
+from vanilla_utils import create_dir, create_model, checkpoint, sample_noise, save_samples, create_image_grid
 
 SEED = 11
 
@@ -127,7 +128,14 @@ def train(train_loader, opt, device):
                 iters.append(iteration);
 
             # Save the generated samples
-            # if iteration % opts.sample_every == 0:
+            if iteration % opts.sample_every == 0:
+                fake_images = G(fixed_noise).detach().cpu()
+                grid = create_image_grid(fake_images)
+                path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                # scipy.misc.imsave(path, grid) # modified by Angel for version issue
+                image = Image.fromarray(grid, 'RGB')
+                image.save(path);
+                print('Saved {}'.format(path))
                 
 
             # Save the model parameters
@@ -154,18 +162,18 @@ def train(train_loader, opt, device):
     plt.legend()
     plt.savefig('GANLossRes.png')
 
-    for i in range(0, opts.num_epochs, 5):
-        plt.figure(figsize=(8, 8))
-        plt.axis('off')
-        plt.title(f'Generated images at epoch {i}')
-        plt.imshow(np.transpose(genRes[i], (1, 2, 0)))
-        plt.show()
+    # for i in range(0, opts.num_epochs, 5):
+    #     plt.figure(figsize=(8, 8))
+    #     plt.axis('off')
+    #     plt.title(f'Generated images at epoch {i}')
+    #     plt.imshow(np.transpose(genRes[i], (1, 2, 0)))
+    #     plt.show()
         
-        plt.figure(figsize=(8, 8))
-        plt.axis('off')
-        plt.title(f'Generated images after last epoch')
-        plt.imshow(np.transpose(genRes[-1], (1, 2, 0)))
-        plt.savefig('{i}.png')
+    #     plt.figure(figsize=(8, 8))
+    #     plt.axis('off')
+    #     plt.title(f'Generated images after last epoch')
+    #     plt.imshow(np.transpose(genRes[-1], (1, 2, 0)))
+    #     plt.savefig('{i}.png')
     
     
     
