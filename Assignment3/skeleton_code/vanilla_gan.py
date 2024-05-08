@@ -165,7 +165,7 @@ def train(train_loader, opt, device):
         plt.axis('off')
         plt.title(f'Generated images after last epoch')
         plt.imshow(np.transpose(genRes[-1], (1, 2, 0)))
-        plt.show()
+        plt.savefig('{i}.png')
     
     
     
