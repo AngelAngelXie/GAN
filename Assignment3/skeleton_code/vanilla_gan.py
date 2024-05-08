@@ -72,10 +72,9 @@ def train(train_loader, opt, device):
 
             # FILL THIS IN
             # 1. Compute the discriminator loss on real images
-            D_real_loss = loss_fn(D(real_images), real_labels)
-
             # real label = 1
             real_labels = torch.ones(opt.batch_size, device=device)
+            D_real_loss = loss_fn(D(real_images), real_labels)
 
             # 2. Sample noise
             noise = torch.randn(opt.batch_size, opt.noise_size, 1, 1, device=device)
