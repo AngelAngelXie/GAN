@@ -16,8 +16,8 @@ def get_emoji_loader(emoji_type, opts):
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ])
 
-    train_path = os.path.join('./emojis', emoji_type)
-    test_path = os.path.join('./emojis', 'Test_{}'.format(emoji_type))
+    train_path = os.path.join('/content/GAN/Assignment3/skeleton_code/emojis', emoji_type)
+    test_path = os.path.join('/content/GAN/Assignment3/skeleton_code/emojis', 'Test_{}'.format(emoji_type))
 
     train_dataset = datasets.ImageFolder(train_path, transform)
     test_dataset = datasets.ImageFolder(test_path, transform)
