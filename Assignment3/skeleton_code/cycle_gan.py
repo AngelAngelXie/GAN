@@ -206,7 +206,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                     plt.axis('off')
                     plt.title(f'Generated Y->X images at iteration {iteration}')
                     plt.imshow(np.transpose(grid1, (1, 2, 0)))
-                    path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                    path = os.path.join(opts.sample_dir, 'sampleyx-{:06d}.png'.format(iteration))
                     plt.savefig(path)
 
                     grid2 = torchvision.utils.make_grid(fake_Y, padding=2, normalize=True)
@@ -214,7 +214,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                     plt.axis('off')
                     plt.title(f'Generated X->Y images at iteration {iteration}')
                     plt.imshow(np.transpose(grid2, (1, 2, 0)))
-                    path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                    path = os.path.join(opts.sample_dir, 'samplexy-{:06d}.png'.format(iteration))
                     plt.savefig(path)
         
         it.append(iteration)
