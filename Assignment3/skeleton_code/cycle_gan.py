@@ -72,6 +72,9 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
     fixed_X = test_iter_X.next()[0].to(device)
     fixed_Y = test_iter_Y.next()[0].to(device)
 
+    mse_loss = torch.nn.MSELoss();
+    l1_loss = torch.nn.L1Loss();
+
     iter_per_epoch = min(len(iter_X), len(iter_Y))
 
     for iteration in range(1, opts.train_iters+1):
@@ -95,52 +98,56 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         # Train with real images
 
         # 1. Compute the discriminator losses on real images
-        # D_X_loss = ...
-        # D_Y_loss = ...
+        D_X_real = D_X(images_X)
+        D_Y_real = D_Y(images_Y)
+        D_X_loss = mse_loss(D_X_real, torch.ones_like(D_X_real))
+        D_Y_loss = mse_loss(D_Y_real, torch.ones_like(D_Y_real))
 
         d_real_loss = D_X_loss + D_Y_loss
         d_real_loss.backward()
         d_optimizer.step()
 
         # Train with fake images
+        # Generate fake images
+        
         d_optimizer.zero_grad()
 
         # 2. Generate fake images that look like domain X based on real images in domain Y
-        # fake_X = ...
+        fake_X = G_YtoX(images_Y)
 
         # 3. Compute the loss for D_X
-        # D_X_loss = ...
+        D_X_fake = D_X(fake_X.detach())
+        D_X_loss = mse_loss(D_X_fake, torch.zeros_like(D_X_fake))
 
         # 4. Generate fake images that look like domain Y based on real images in domain X
-        # fake_Y = ...
+        fake_Y = G_XtoY(images_X)
 
         # 5. Compute the loss for D_Y
-        # D_Y_loss = ...
+        D_Y_fake = D_Y(fake_Y.detach())
+        D_Y_loss = mse_loss(D_Y_fake, torch.zeros_like(D_Y_fake))
 
         d_fake_loss = D_X_loss + D_Y_loss
         d_fake_loss.backward()
         d_optimizer.step()
 
-
-
         # =========================================
         #            TRAIN THE GENERATORS
         # =========================================
-
-
         #########################################
         ##    FILL THIS IN: Y--X-->Y CYCLE     ##
         #########################################
         g_optimizer.zero_grad()
 
         # 1. Generate fake images that look like domain X based on real images in domain Y
-        # fake_X = ...
+        fake_X = G_YtoX(images_Y)
 
         # 2. Compute the generator loss based on domain X
-        # g_loss = ...
+        D_X_fake = D_X(fake_X.detach())
+        g_loss = mse_loss(D_X_fake, torch.ones_like(D_X_real))
 
         # 3. Compute the cycle consistency loss (the reconstruction loss)
-        # cycle_consistency_loss = ...
+        reconstructed_X = G_YtoX(G_XtoY(images_X))
+        cycle_consistency_loss = l1_loss(images_X, reconstructed_X)
 
         g_loss += cycle_consistency_loss
 
@@ -154,13 +161,15 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         g_optimizer.zero_grad()
 
         # 1. Generate fake images that look like domain Y based on real images in domain X
-        # fake_Y = ...
+        fake_Y = G_XtoY(images_X)
 
         # 2. Compute the generator loss based on domain Y
-        # g_loss = ...
+        D_Y_fake = D_Y(fake_Y.detach())
+        g_loss = mse_loss(D_Y_fake, torch.ones_like(D_Y_real))
 
         # 3. Compute the cycle consistency loss (the reconstruction loss)
-        # cycle_consistency_loss = ...
+        reconstructed_Y = G_XtoY(G_YtoX(images_Y))
+        cycle_consistency_loss = l1_loss(images_Y, reconstructed_Y)
         
         g_loss += cycle_consistency_loss
 
@@ -233,7 +242,7 @@ def create_parser():
     parser.add_argument('--init_zero_weights', action='store_true', default=False, help='Choose whether to initialize the generator conv weights to 0 (implements the identity function).')
 
     # Training hyper-parameters
-    parser.add_argument('--train_iters', type=int, default=100000, help='The number of training iterations to run (you can Ctrl-C out earlier if you want).')
+    parser.add_argument('--train_iters', type=int, default=5000, help='The number of training iterations to run (you can Ctrl-C out earlier if you want).')
     parser.add_argument('--batch_size', type=int, default=16, help='The number of images in a batch.')
     parser.add_argument('--num_workers', type=int, default=0, help='The number of threads to use for the DataLoader.')
     parser.add_argument('--lr', type=float, default=0.0003, help='The learning rate (default 0.0003)')
