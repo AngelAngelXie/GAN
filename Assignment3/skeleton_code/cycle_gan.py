@@ -196,8 +196,6 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                     D_X_loss.item(), d_fake_loss.item(), g_loss.item()))
 
 
-       
-            save_samples(iteration, fixed_Y, fixed_X, G_YtoX, G_XtoY, opts)
         # Save the generated samples
             if iteration % opts.sample_every == 0:
                 with torch.no_grad():
