@@ -69,8 +69,8 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
 
     # Get some fixed data from domains X and Y for sampling. These are images that are held
     # constant throughout training, that allow us to inspect the model's performance.
-    fixed_X = test_iter_X.next()[0].to(device)
-    fixed_Y = test_iter_Y.next()[0].to(device)
+    fixed_X = next(test_iter_X)[0].to(device)
+    fixed_Y = next(test_iter_Y)[0].to(device)
 
     mse_loss = torch.nn.MSELoss();
     l1_loss = torch.nn.L1Loss();
@@ -84,8 +84,8 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
             iter_X = iter(dataloader_X)
             iter_Y = iter(dataloader_Y)
             
-        images_X = iter_X.next()[0].to(device)
-        images_Y = iter_Y.next()[0].to(device)
+        images_X = next(iter_X)[0].to(device)
+        images_Y = next(iter_Y)[0].to(device)
 
         # ============================================
         #            TRAIN THE DISCRIMINATORS
