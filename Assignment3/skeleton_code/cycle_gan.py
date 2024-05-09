@@ -23,6 +23,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+import torchvision
+
+import matplotlib.pyplot as plt
 
 # Numpy & Scipy imports
 import numpy as np
@@ -53,6 +56,10 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
     G_YtoX.to(device)
     D_X.to(device)
     D_Y.to(device)
+
+    gen_losses = []
+    dis_losses = []
+    iter = []
 
     g_params = list(G_XtoY.parameters()) + list(G_YtoX.parameters())  # Get generator parameters
     d_params = list(D_X.parameters()) + list(D_Y.parameters())  # Get discriminator parameters
@@ -127,6 +134,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         D_Y_loss = mse_loss(D_Y_fake, torch.zeros_like(D_Y_fake))
 
         d_fake_loss = D_X_loss + D_Y_loss
+        dis_losses.append(d_fake_loss.item())
         d_fake_loss.backward()
         d_optimizer.step()
 
@@ -172,9 +180,12 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
         cycle_consistency_loss = l1_loss(images_Y, reconstructed_Y)
         
         g_loss += cycle_consistency_loss
+        gen_losses.append(g_loss.item())
 
         g_loss.backward()
         g_optimizer.step()
+
+        
 
 
         # Print the log info
@@ -185,14 +196,46 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                     D_X_loss.item(), d_fake_loss.item(), g_loss.item()))
 
 
-        # Save the generated samples
-        if iteration % opts.sample_every == 0:
+       
             save_samples(iteration, fixed_Y, fixed_X, G_YtoX, G_XtoY, opts)
+        # Save the generated samples
+            if iteration % opts.sample_every == 0:
+                with torch.no_grad():
+                    fake_X = G_YtoX(fixed_Y).detach().cpu()
+                    fake_Y = G_XtoY(fixed_X).detach().cpu()
+                    grid1 = torchvision.utils.make_grid(fake_X, padding=2, normalize=True)
+                    plt.figure(figsize=(8, 8))
+                    plt.axis('off')
+                    plt.title(f'Generated Y->X images at iteration {iteration}')
+                    plt.imshow(np.transpose(grid1, (1, 2, 0)))
+                    path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                    plt.savefig(path)
+
+                    grid2 = torchvision.utils.make_grid(fake_Y, padding=2, normalize=True)
+                    plt.figure(figsize=(8, 8))
+                    plt.axis('off')
+                    plt.title(f'Generated X->Y images at iteration {iteration}')
+                    plt.imshow(np.transpose(grid2, (1, 2, 0)))
+                    path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
+                    plt.savefig(path)
+        
+        iters.append(iteration)
 
 
         # Save the model parameters
         if iteration % opts.checkpoint_every == 0:
             checkpoint(iteration, G_XtoY, G_YtoX, D_X, D_Y, opts)
+
+
+    # Plotting the losses after the training loop
+    plt.figure(figsize=(10, 5))
+    plt.title("Generator and Discriminator Loss During Training")
+    plt.plot(iters, dis_losses, label="Discriminator Loss")
+    plt.plot(iters, gen_losses, label="Generator Loss")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.savefig('GANLossRes.png')
 
 
 def main(opts):
