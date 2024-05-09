@@ -59,7 +59,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
 
     gen_losses = []
     dis_losses = []
-    iter = []
+    it = []
 
     g_params = list(G_XtoY.parameters()) + list(G_YtoX.parameters())  # Get generator parameters
     d_params = list(D_X.parameters()) + list(D_Y.parameters())  # Get discriminator parameters
@@ -219,7 +219,7 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
                     path = os.path.join(opts.sample_dir, 'sample-{:06d}.png'.format(iteration))
                     plt.savefig(path)
         
-        iter.append(iteration)
+        it.append(iteration)
 
 
         # Save the model parameters
@@ -230,8 +230,8 @@ def training_loop(dataloader_X, dataloader_Y, test_dataloader_X, test_dataloader
     # Plotting the losses after the training loop
     plt.figure(figsize=(10, 5))
     plt.title("Generator and Discriminator Loss During Training")
-    plt.plot(iter, dis_losses, label="Discriminator Loss")
-    plt.plot(iter, gen_losses, label="Generator Loss")
+    plt.plot(it, dis_losses, label="Discriminator Loss")
+    plt.plot(it, gen_losses, label="Generator Loss")
     plt.xlabel("Iterations")
     plt.ylabel("Loss")
     plt.legend()
